@@ -1,248 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EcoCalc - São Vicente</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoCalc SV - Matheus Barbalho</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
   
-  :root {
-    --primary: #2a9d8f;
-    --secondary: #264653;
-    --accent: #e9c46a;
-    --light: #f8f9fa;
-    --dark: #212529;
-    --success: #2a9d8f;
-    --warning: #f4a261;
-    --danger: #e76f51;
-  }
-  
-  body {
+  * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    color: var(--dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+
+  body {
+    background: #e6f5f3;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
   }
 
   .container {
-    width: 100%;
     max-width: 600px;
-    padding: 2rem;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   }
 
   .header {
     text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
+    margin-bottom: 25px;
   }
 
-  .header::after {
-    content: "";
-    display: block;
-    width: 80px;
-    height: 4px;
-    background: var(--accent);
-    margin: 1rem auto 0;
-    border-radius: 2px;
-  }
-
-  .uni-badge {
-    background: var(--secondary);
+  .badge-unisanta {
+    background: #005f60;
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
     display: inline-block;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
   }
 
   h1 {
-    color: var(--secondary);
-    font-weight: 700;
-    font-size: 2.2rem;
-    margin: 0.5rem 0;
-    line-height: 1.2;
+    color: #005f60;
+    font-size: 28px;
+    margin-bottom: 5px;
   }
 
-  .subtitle {
-    color: var(--primary);
-    font-weight: 300;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
+  .form-group {
+    margin-bottom: 20px;
   }
 
   label {
     display: block;
-    margin-top: 1.5rem;
+    margin-bottom: 8px;
     font-weight: 600;
-    color: var(--secondary);
-    font-size: 0.95rem;
+    color: #005f60;
   }
 
-  select, input[type="number"] {
+  input, select {
     width: 100%;
-    padding: 12px 16px;
-    margin-top: 8px;
+    padding: 12px;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-  }
-
-  select:focus, input[type="number"]:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+    font-size: 16px;
   }
 
   button {
-    width: 100%;
-    background: var(--secondary);
+    background: linear-gradient(to right, #008080, #005f60);
     color: white;
     border: none;
-    padding: 16px;
+    padding: 15px;
     border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
     font-weight: 600;
-    font-size: 1.1rem;
+    width: 100%;
     cursor: pointer;
-    margin-top: 2rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    margin-top: 10px;
   }
 
   button:hover {
-    background: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-  }
-
-  button:active {
-    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0,95,96,0.2);
   }
 
   .results {
     display: none;
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-top: 2rem;
-    animation: fadeIn 0.5s ease;
+    margin-top: 30px;
+    animation: fadeIn 0.5s;
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .results h2 {
-    color: var(--secondary);
-    text-align: center;
-    margin-bottom: 1.5rem;
-    position: relative;
-  }
-
-  .results h2::after {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: var(--accent);
-    margin: 0.8rem auto 0;
-    border-radius: 2px;
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .result-item {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  .result-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
   }
 
   .result-value {
     font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .result-message {
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-
-  canvas {
-    margin-top: 2rem;
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  .disclaimer {
-    font-size: 0.75rem;
-    color: #6c757d;
-    text-align: center;
-    margin-top: 1.5rem;
-    line-height: 1.5;
+    color: #008080;
+    margin-bottom: 5px;
   }
 
   .footer {
     text-align: center;
-    margin-top: 3rem;
-    padding: 1.5rem 0;
-    font-size: 0.8rem;
-    color: var(--secondary);
-    width: 100%;
+    margin-top: 40px;
+    font-size: 14px;
+    color: #666;
   }
 
   @media (max-width: 768px) {
     .container {
-      padding: 1.5rem;
+      padding: 20px;
     }
-    
     h1 {
-      font-size: 1.8rem;
-    }
-    
-    .card, .results {
-      padding: 1.5rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .container {
-      padding: 1rem;
-    }
-    
-    h1 {
-      font-size: 1.6rem;
-    }
-    
-    button {
-      padding: 14px;
+      font-size: 24px;
     }
   }
 </style>
@@ -250,241 +133,119 @@
 <body>
   <div class="container">
     <header class="header">
-      <div class="uni-badge">Projeto de Extensão - UNISANTA</div>
-      <h1>EcoCalc</h1>
-      <p class="subtitle">Calculadora de Impacto Ambiental em São Vicente</p>
+      <div class="badge-unisanta">Projeto UNISANTA</div>
+      <h1>EcoCalc São Vicente</h1>
+      <p>Calculadora de Impacto Ambiental</p>
     </header>
 
-    <main>
-      <div class="card">
-        <form id="ecoForm">
-          <label for="pessoas">Quantas pessoas moram com você?</label>
-          <input type="number" id="pessoas" name="pessoas" min="1" max="20" value="3" required />
-
-          <label for="aparelhos">Você usa muitos aparelhos elétricos?</label>
-          <select id="aparelhos" name="aparelhos" required>
-            <option value="" disabled selected>Selecione uma opção</option>
-            <option value="poucos">Poucos (~80 kWh/mês)</option>
-            <option value="medios">Médios (~160 kWh/mês)</option>
-            <option value="muitos">Muitos (~240 kWh/mês)</option>
-          </select>
-
-          <label for="transporte">Você usa carro ou moto com frequência?</label>
-          <select id="transporte" name="transporte" required>
-            <option value="" disabled selected>Selecione uma opção</option>
-            <option value="nao">Não uso</option>
-            <option value="baixo">Baixo (~70 km/mês)</option>
-            <option value="medio">Médio (~200 km/mês)</option>
-            <option value="alto">Alto (~400 km/mês)</option>
-          </select>
-
-          <button type="submit">
-            <span>Calcular Meu Impacto</span>
-          </button>
-        </form>
+    <form id="ecoForm">
+      <div class="form-group">
+        <label for="pessoas">Quantas pessoas moram com você?</label>
+        <input type="number" id="pessoas" min="1" max="20" value="3" required>
       </div>
 
-      <div class="results" id="results">
-        <h2>Seu Resultado</h2>
-        
-        <div class="result-item">
-          <p id="mensagemGeral" class="result-message"></p>
-        </div>
-        
-        <div class="result-item">
-          <p id="percentualAgua" class="result-value"></p>
-          <p id="msgAgua" class="result-message"></p>
-        </div>
-        
-        <div class="result-item">
-          <p id="percentualEnergia" class="result-value"></p>
-          <p id="msgEnergia" class="result-message"></p>
-        </div>
-        
-        <div class="result-item">
-          <p id="percentualTransporte" class="result-value"></p>
-          <p id="msgTransporte" class="result-message"></p>
-        </div>
-
-        <canvas id="grafico" width="400" height="250"></canvas>
-        
-        <p class="disclaimer">
-          *Estes valores são estimativas baseadas em médias regionais. Seu consumo real pode variar conforme seus hábitos e eficiência dos equipamentos.
-        </p>
+      <div class="form-group">
+        <label for="aparelhos">Uso de aparelhos elétricos</label>
+        <select id="aparelhos" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="80">Poucos (~80 kWh/mês)</option>
+          <option value="160">Médios (~160 kWh)</option>
+          <option value="240">Muitos (~240 kWh)</option>
+        </select>
       </div>
-    </main>
 
-    <footer class="footer">
+      <div class="form-group">
+        <label for="transporte">Uso de veículos</label>
+        <select id="transporte" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="0">Não uso</option>
+          <option value="70">Pouco (~70km/mês)</option>
+          <option value="200">Moderado (~200km)</option>
+          <option value="400">Muito (~400km)</option>
+        </select>
+      </div>
+
+      <button type="submit">Calcular Impacto</button>
+    </form>
+
+    <div id="results" class="results">
+      <h2 style="text-align:center;margin-bottom:20px;">Seu Resultado</h2>
+      
+      <div class="result-item" id="resultAgua"></div>
+      <div class="result-item" id="resultEnergia"></div>
+      <div class="result-item" id="resultTransporte"></div>
+      
+      <p style="font-size:13px;text-align:center;margin-top:20px;color:#666;">
+        *Cálculos aproximados baseados em dados da Sabesp e Cetesb (2023)
+      </p>
+    </div>
+
+    <div class="footer">
       <p>Desenvolvido por Matheus Barbalho</p>
-      <p>Universidade Santa Cecília (UNISANTA) - Projeto de Extensão Curricular</p>
-    </footer>
+      <p>UNISANTA - Projeto de Extensão Curricular</p>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const form = document.getElementById('ecoForm');
-    const results = document.getElementById('results');
-    const mensagemGeral = document.getElementById('mensagemGeral');
-    const percentualAgua = document.getElementById('percentualAgua');
-    const percentualEnergia = document.getElementById('percentualEnergia');
-    const percentualTransporte = document.getElementById('percentualTransporte');
-    const msgAgua = document.getElementById('msgAgua');
-    const msgEnergia = document.getElementById('msgEnergia');
-    const msgTransporte = document.getElementById('msgTransporte');
-    const ctx = document.getElementById('grafico').getContext('2d');
-    let chart;
-
-    const mediaAguaPorPessoa_m3 = 3.5;
-    const mediaEnergiaPorDomicilio_kWh = 160; 
-    const mediaCO2PorDomicilio_kg = 40;
-    const popMunicipio = 360000;
-    const pessoasPorDomicilio = 3;
-    const m3ToLitros = 1000;
-
-    form.addEventListener('submit', (e) => {
+    // Configurações base
+    const consumoAguaPorPessoa = 3.5; // m³ por pessoa
+    const taxaCO2 = 0.2; // kg/km (fonte: Cetesb)
+    
+    document.getElementById('ecoForm').addEventListener('submit', function(e) {
       e.preventDefault();
-
-      const pessoas = parseInt(form.pessoas.value);
-      const aparelhos = form.aparelhos.value;
-      const transporte = form.transporte.value;
-
-      const consumoAgua_m3 = pessoas * mediaAguaPorPessoa_m3;
-      const consumoAgua_litros = consumoAgua_m3 * m3ToLitros;
-
-      let consumoEnergia_kWh;
-      switch(aparelhos) {
-        case 'poucos': consumoEnergia_kWh = 80; break;
-        case 'medios': consumoEnergia_kWh = 160; break;
-        case 'muitos': consumoEnergia_kWh = 240; break;
-      }
-
-      let kmMensais;
-      switch(transporte) {
-        case 'nao': kmMensais = 0; break;
-        case 'baixo': kmMensais = 70; break;
-        case 'medio': kmMensais = 200; break;
-        case 'alto': kmMensais = 400; break;
-      }
-      const co2PorKm = 0.2;
-      const consumoCO2_kg = kmMensais * co2PorKm;
-
-      const totalDomicilios = popMunicipio / pessoasPorDomicilio;
-      const totalAguaMunicipio_m3 = mediaAguaPorPessoa_m3 * popMunicipio;
-      const totalEnergiaMunicipio_kWh = mediaEnergiaPorDomicilio_kWh * totalDomicilios;
-      const totalCO2Municipio_kg = mediaCO2PorDomicilio_kg * totalDomicilios;
-
-      const percAgua = (consumoAgua_m3 / totalAguaMunicipio_m3) * 100;
-      const percEnergia = (consumoEnergia_kWh / totalEnergiaMunicipio_kWh) * 100;
-      const percTransporte = (consumoCO2_kg / totalCO2Municipio_kg) * 100;
-
-      if (consumoAgua_litros < 8000) {
-        msgAgua.textContent = "✅ Consumo excelente! Você está economizando água direitinho!";
-      } else if (consumoAgua_litros < 12000) {
-        msgAgua.textContent = "💧 Na média! Banhos mais curtos podem ajudar a economizar mais.";
-      } else {
-        msgAgua.textContent = "⚠️ Alto consumo! Verifique vazamentos e reduza tempo no chuveiro.";
-      }
-
-      if (consumoEnergia_kWh < 100) {
-        msgEnergia.textContent = "💡 Eficiente! Você usa energia com consciência!";
-      } else if (consumoEnergia_kWh < 180) {
-        msgEnergia.textContent = "🔌 Na média! Desligar aparelhos da tomada ajuda ainda mais.";
-      } else {
-        msgEnergia.textContent = "⚡ Alto consumo! Reveja eletrônicos e horário de uso.";
-      }
-
-      if (consumoCO2_kg < 10) {
-        msgTransporte.textContent = "🚲 Eco-friendly! Seu transporte quase não polui!";
-      } else if (consumoCO2_kg < 30) {
-        msgTransporte.textContent = "🚗 Moderado! Tente caronas ou transporte público 1x por semana.";
-      } else {
-        msgTransporte.textContent = "🚨 Alto impacto! Que tal experimentar alternativas sustentáveis?";
-      }
-
-      const emojis = ["🌱", "🌍", "💚", "✨"];
-      const emojiAleatorio = emojis[Math.floor(Math.random() * emojis.length)];
       
-      if (consumoAgua_litros < 8000 && consumoEnergia_kWh < 100 && consumoCO2_kg < 10) {
-        mensagemGeral.textContent = `${emojiAleatorio} Você é um exemplo de sustentabilidade! Continue assim!`;
-      } else if (consumoAgua_litros > 12000 || consumoEnergia_kWh > 180 || consumoCO2_kg > 30) {
-        mensagemGeral.textContent = `${emojiAleatorio} Todo mundo pode melhorar! Que tal tentar uma meta sustentável esta semana?`;
-      } else {
-        mensagemGeral.textContent = `${emojiAleatorio} Você está no caminho! Pequenas mudanças fazem grande diferença.`;
-      }
-
-      percentualAgua.textContent = `Água: ${consumoAgua_litros.toFixed(0)} litros/mês`;
-      percentualEnergia.textContent = `Energia: ${consumoEnergia_kWh} kWh/mês`;
-      percentualTransporte.textContent = `Emissões: ${consumoCO2_kg.toFixed(1)} kg CO₂/mês`;
-
-      results.style.display = 'block';
-
-      const labels = ['Você', 'Município'];
-      const aguaValores = [consumoAgua_litros, totalAguaMunicipio_m3 * m3ToLitros];
-      const energiaValores = [consumoEnergia_kWh, totalEnergiaMunicipio_kWh];
-      const transporteValores = [consumoCO2_kg, totalCO2Municipio_kg];
-
-      if (chart) chart.destroy();
-
-      chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Água (litros)',
-              data: aguaValores,
-              backgroundColor: ['#4a90e2', '#a0c4ff']
-            },
-            {
-              label: 'Energia (kWh)',
-              data: energiaValores,
-              backgroundColor: ['#f5a623', '#ffd580']
-            },
-            {
-              label: 'CO2 Transporte (kg)',
-              data: transporteValores,
-              backgroundColor: ['#7ed957', '#c0f2a5']
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              type: 'logarithmic',
-              beginAtZero: false,
-              title: {
-                display: true,
-                text: 'Consumo (escala log)'
-              },
-              ticks: {
-                callback: function(value) {
-                  if (value >= 1000) return value/1000 + 'k';
-                  return value;
-                }
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 18,
-                padding: 12,
-                font: { size: 14 }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.dataset.label}: ${context.parsed.y.toLocaleString(undefined, {maximumFractionDigits:2})}`;
-                }
-              }
-            }
-          }
-        }
+      // Pegando valores do form
+      const pessoas = parseInt(document.getElementById('pessoas').value);
+      const consumoEletrico = parseInt(document.getElementById('aparelhos').value);
+      const kmRodados = parseInt(document.getElementById('transporte').value);
+      
+      // Cálculos
+      const aguaTotal = (pessoas * consumoAguaPorPessoa * 1000).toFixed(0);
+      const co2Total = (kmRodados * taxaCO2).toFixed(1);
+      
+      // Exibindo resultados
+      document.getElementById('resultAgua').innerHTML = `
+        <div class="result-value">Água: ${aguaTotal} litros/mês</div>
+        <p>${getMensagemAgua(aguaTotal)}</p>
+      `;
+      
+      document.getElementById('resultEnergia').innerHTML = `
+        <div class="result-value">Energia: ${consumoEletrico} kWh/mês</div>
+        <p>${getMensagemEnergia(consumoEletrico)}</p>
+      `;
+      
+      document.getElementById('resultTransporte').innerHTML = `
+        <div class="result-value">CO₂: ${co2Total} kg/mês</div>
+        <p>${getMensagemTransporte(co2Total)}</p>
+      `;
+      
+      document.getElementById('results').style.display = 'block';
+      
+      // Scroll para resultados
+      window.scrollTo({
+        top: document.getElementById('results').offsetTop - 50,
+        behavior: 'smooth'
       });
     });
+    
+    function getMensagemAgua(litros) {
+      if (litros < 8000) return "Tá economizando bem! 💧";
+      if (litros < 12000) return "Na média... Dá pra melhorar!";
+      return "Consumo alto! Checa vazamentos e reduz o tempo no banho!";
+    }
+    
+    function getMensagemEnergia(kWh) {
+      if (kWh < 100) return "Boa! Tá usando energia certinho! 💡";
+      if (kWh < 180) return "Tá na média, mas desliga os aparelhos da tomada!";
+      return "Tá gastando muito! Reveja seus eletrônicos!";
+    }
+    
+    function getMensagemTransporte(kgCO2) {
+      if (kgCO2 < 10) return "Tá de bike? Eco-friendly! 🌱";
+      if (kgCO2 < 30) return "Que tal tentar carona solidária?";
+      return "Tá pegando pesado no transporte! Tenta alternativas!";
+    }
   </script>
 </body>
 </html>
