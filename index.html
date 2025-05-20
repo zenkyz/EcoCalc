@@ -218,24 +218,6 @@
     width: 100%;
   }
 
-  .footer a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  /* Animações e estados */
-  .pulse {
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-
-  /* Responsivo */
   @media (max-width: 768px) {
     .container {
       padding: 1.5rem;
@@ -268,7 +250,7 @@
 <body>
   <div class="container">
     <header class="header">
-      <div class="uni-badge pulse">Projeto de Extensão - UNISANTA</div>
+      <div class="uni-badge">Projeto de Extensão - UNISANTA</div>
       <h1>EcoCalc</h1>
       <p class="subtitle">Calculadora de Impacto Ambiental em São Vicente</p>
     </header>
@@ -333,15 +315,13 @@
     </main>
 
     <footer class="footer">
-      <p>Desenvolvido por <a href="#" target="_blank">[Seu Nome]</a> - Curso de [Seu Curso]</p>
+      <p>Desenvolvido por Matheus Barbalho</p>
       <p>Universidade Santa Cecília (UNISANTA) - Projeto de Extensão Curricular</p>
     </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // [O código JavaScript permanece EXATAMENTE o mesmo que na versão anterior]
-    // Apenas atualizei os seletores para as novas IDs das mensagens
     const form = document.getElementById('ecoForm');
     const results = document.getElementById('results');
     const mensagemGeral = document.getElementById('mensagemGeral');
@@ -354,8 +334,157 @@
     const ctx = document.getElementById('grafico').getContext('2d');
     let chart;
 
-    // [Restante do código JavaScript permanece idêntico]
-    // ... (insira aqui todo o código JavaScript da versão anterior)
+    const mediaAguaPorPessoa_m3 = 3.5;
+    const mediaEnergiaPorDomicilio_kWh = 160; 
+    const mediaCO2PorDomicilio_kg = 40;
+    const popMunicipio = 360000;
+    const pessoasPorDomicilio = 3;
+    const m3ToLitros = 1000;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const pessoas = parseInt(form.pessoas.value);
+      const aparelhos = form.aparelhos.value;
+      const transporte = form.transporte.value;
+
+      const consumoAgua_m3 = pessoas * mediaAguaPorPessoa_m3;
+      const consumoAgua_litros = consumoAgua_m3 * m3ToLitros;
+
+      let consumoEnergia_kWh;
+      switch(aparelhos) {
+        case 'poucos': consumoEnergia_kWh = 80; break;
+        case 'medios': consumoEnergia_kWh = 160; break;
+        case 'muitos': consumoEnergia_kWh = 240; break;
+      }
+
+      let kmMensais;
+      switch(transporte) {
+        case 'nao': kmMensais = 0; break;
+        case 'baixo': kmMensais = 70; break;
+        case 'medio': kmMensais = 200; break;
+        case 'alto': kmMensais = 400; break;
+      }
+      const co2PorKm = 0.2;
+      const consumoCO2_kg = kmMensais * co2PorKm;
+
+      const totalDomicilios = popMunicipio / pessoasPorDomicilio;
+      const totalAguaMunicipio_m3 = mediaAguaPorPessoa_m3 * popMunicipio;
+      const totalEnergiaMunicipio_kWh = mediaEnergiaPorDomicilio_kWh * totalDomicilios;
+      const totalCO2Municipio_kg = mediaCO2PorDomicilio_kg * totalDomicilios;
+
+      const percAgua = (consumoAgua_m3 / totalAguaMunicipio_m3) * 100;
+      const percEnergia = (consumoEnergia_kWh / totalEnergiaMunicipio_kWh) * 100;
+      const percTransporte = (consumoCO2_kg / totalCO2Municipio_kg) * 100;
+
+      if (consumoAgua_litros < 8000) {
+        msgAgua.textContent = "✅ Consumo excelente! Você está economizando água direitinho!";
+      } else if (consumoAgua_litros < 12000) {
+        msgAgua.textContent = "💧 Na média! Banhos mais curtos podem ajudar a economizar mais.";
+      } else {
+        msgAgua.textContent = "⚠️ Alto consumo! Verifique vazamentos e reduza tempo no chuveiro.";
+      }
+
+      if (consumoEnergia_kWh < 100) {
+        msgEnergia.textContent = "💡 Eficiente! Você usa energia com consciência!";
+      } else if (consumoEnergia_kWh < 180) {
+        msgEnergia.textContent = "🔌 Na média! Desligar aparelhos da tomada ajuda ainda mais.";
+      } else {
+        msgEnergia.textContent = "⚡ Alto consumo! Reveja eletrônicos e horário de uso.";
+      }
+
+      if (consumoCO2_kg < 10) {
+        msgTransporte.textContent = "🚲 Eco-friendly! Seu transporte quase não polui!";
+      } else if (consumoCO2_kg < 30) {
+        msgTransporte.textContent = "🚗 Moderado! Tente caronas ou transporte público 1x por semana.";
+      } else {
+        msgTransporte.textContent = "🚨 Alto impacto! Que tal experimentar alternativas sustentáveis?";
+      }
+
+      const emojis = ["🌱", "🌍", "💚", "✨"];
+      const emojiAleatorio = emojis[Math.floor(Math.random() * emojis.length)];
+      
+      if (consumoAgua_litros < 8000 && consumoEnergia_kWh < 100 && consumoCO2_kg < 10) {
+        mensagemGeral.textContent = `${emojiAleatorio} Você é um exemplo de sustentabilidade! Continue assim!`;
+      } else if (consumoAgua_litros > 12000 || consumoEnergia_kWh > 180 || consumoCO2_kg > 30) {
+        mensagemGeral.textContent = `${emojiAleatorio} Todo mundo pode melhorar! Que tal tentar uma meta sustentável esta semana?`;
+      } else {
+        mensagemGeral.textContent = `${emojiAleatorio} Você está no caminho! Pequenas mudanças fazem grande diferença.`;
+      }
+
+      percentualAgua.textContent = `Água: ${consumoAgua_litros.toFixed(0)} litros/mês`;
+      percentualEnergia.textContent = `Energia: ${consumoEnergia_kWh} kWh/mês`;
+      percentualTransporte.textContent = `Emissões: ${consumoCO2_kg.toFixed(1)} kg CO₂/mês`;
+
+      results.style.display = 'block';
+
+      const labels = ['Você', 'Município'];
+      const aguaValores = [consumoAgua_litros, totalAguaMunicipio_m3 * m3ToLitros];
+      const energiaValores = [consumoEnergia_kWh, totalEnergiaMunicipio_kWh];
+      const transporteValores = [consumoCO2_kg, totalCO2Municipio_kg];
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Água (litros)',
+              data: aguaValores,
+              backgroundColor: ['#4a90e2', '#a0c4ff']
+            },
+            {
+              label: 'Energia (kWh)',
+              data: energiaValores,
+              backgroundColor: ['#f5a623', '#ffd580']
+            },
+            {
+              label: 'CO2 Transporte (kg)',
+              data: transporteValores,
+              backgroundColor: ['#7ed957', '#c0f2a5']
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              type: 'logarithmic',
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: 'Consumo (escala log)'
+              },
+              ticks: {
+                callback: function(value) {
+                  if (value >= 1000) return value/1000 + 'k';
+                  return value;
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 18,
+                padding: 12,
+                font: { size: 14 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.parsed.y.toLocaleString(undefined, {maximumFractionDigits:2})}`;
+                }
+              }
+            }
+          }
+        }
+      });
+    });
   </script>
 </body>
 </html>
