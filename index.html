@@ -1,251 +1,229 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoCalc SV - Matheus Barbalho</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EcoCalc - São Vicente</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-  
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', Arial, sans-serif;
-  }
-
+  /* Configuração geral da página */
   body {
-    background: #e6f5f3;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
+    margin: 0; padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #3a8dba 0%, #71c9ce 100%);
+    color: #1a1a1a;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
   }
 
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-
-  .badge-unisanta {
-    background: #005f60;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    display: inline-block;
-    margin-bottom: 10px;
-  }
-
+  /* Estilo do título principal */
   h1 {
-    color: #005f60;
-    font-size: 28px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    color: #0b3c49;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
   }
 
-  .form-group {
-    margin-bottom: 20px;
-  }
-
+  /* Formulário de inputs */
   label {
     display: block;
-    margin-bottom: 8px;
+    margin-top: 15px;
     font-weight: 600;
-    color: #005f60;
   }
-
-  input, select {
+  
+  /* Campos de entrada */
+  select, input[type="number"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-  }
-
-  button {
-    background: linear-gradient(to right, #008080, #005f60);
-    color: white;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
     border: none;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  /* Botão de calcular */
+  button {
+    margin-top: 25px;
     width: 100%;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-  }
-
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0,95,96,0.2);
-  }
-
-  .results {
-    display: none;
-    margin-top: 30px;
-    animation: fadeIn 0.5s;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .result-item {
-    background: #f8f8f8;
-    padding: 15px;
+    background: #0b3c49;
+    border: none;
+    padding: 14px;
     border-radius: 10px;
-    margin-bottom: 15px;
-  }
-
-  .result-value {
+    color: #fff;
     font-weight: 700;
-    color: #008080;
-    margin-bottom: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+  }
+  
+  /* Efeito quando passa o mouse */
+  button:hover {
+    background: #064f58;
   }
 
-  .footer {
+  /* Área de resultados (aparece depois) */
+  .results {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    color: #064f58;
     text-align: center;
-    margin-top: 40px;
-    font-size: 14px;
-    color: #666;
   }
 
-  @media (max-width: 768px) {
-    .container {
-      padding: 20px;
-    }
-    h1 {
-      font-size: 24px;
-    }
+  /* Ajustes pra mobile */
+  @media (max-width: 500px) {
+    body { padding: 15px 12px; }
+    h1 { font-size: 1.6rem; }
+    button { font-size: 1rem; padding: 12px; }
+    .results { padding: 15px 18px; }
   }
 </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="badge-unisanta">Projeto UNISANTA</div>
-      <h1>EcoCalc São Vicente</h1>
-      <p>Calculadora de Impacto Ambiental</p>
-    </header>
 
-    <form id="ecoForm">
-      <div class="form-group">
-        <label for="pessoas">Quantas pessoas moram com você?</label>
-        <input type="number" id="pessoas" min="1" max="20" value="3" required>
-      </div>
+<!-- Título da página -->
+<h1>EcoCalc - São Vicente</h1>
 
-      <div class="form-group">
-        <label for="aparelhos">Uso de aparelhos elétricos</label>
-        <select id="aparelhos" required>
-          <option value="" disabled selected>Selecione</option>
-          <option value="80">Poucos (~80 kWh/mês)</option>
-          <option value="160">Médios (~160 kWh)</option>
-          <option value="240">Muitos (~240 kWh)</option>
-        </select>
-      </div>
+<!-- Formulário principal -->
+<form id="ecoForm" style="max-width:480px; width:100%;">
+  <!-- Input: número de pessoas -->
+  <label for="pessoas">Quantas pessoas moram com você?</label>
+  <input type="number" id="pessoas" name="pessoas" min="1" max="20" value="3" required />
 
-      <div class="form-group">
-        <label for="transporte">Uso de veículos</label>
-        <select id="transporte" required>
-          <option value="" disabled selected>Selecione</option>
-          <option value="0">Não uso</option>
-          <option value="70">Pouco (~70km/mês)</option>
-          <option value="200">Moderado (~200km)</option>
-          <option value="400">Muito (~400km)</option>
-        </select>
-      </div>
+  <!-- Select: uso de eletrônicos -->
+  <label for="aparelhos">Você usa muitos aparelhos elétricos?</label>
+  <select id="aparelhos" name="aparelhos" required>
+    <option value="" disabled selected>Selecione uma opção</option>
+    <option value="poucos">Poucos (~80 kWh/mês)</option>
+    <option value="medios">Médios (~160 kWh/mês)</option>
+    <option value="muitos">Muitos (~240 kWh/mês)</option>
+  </select>
 
-      <button type="submit">Calcular Impacto</button>
-    </form>
+  <!-- Select: uso de transporte -->
+  <label for="transporte">Você usa carro ou moto com frequência?</label>
+  <select id="transporte" name="transporte" required>
+    <option value="" disabled selected>Selecione uma opção</option>
+    <option value="nao">Não uso</option>
+    <option value="baixo">Baixo (~70 km/mês)</option>
+    <option value="medio">Médio (~200 km/mês)</option>
+    <option value="alto">Alto (~400 km/mês)</option>
+  </select>
 
-    <div id="results" class="results">
-      <h2 style="text-align:center;margin-bottom:20px;">Seu Resultado</h2>
-      
-      <div class="result-item" id="resultAgua"></div>
-      <div class="result-item" id="resultEnergia"></div>
-      <div class="result-item" id="resultTransporte"></div>
-      
-      <p style="font-size:13px;text-align:center;margin-top:20px;color:#666;">
-        *Cálculos aproximados baseados em dados da Sabesp e Cetesb (2023)
-      </p>
-    </div>
+  <!-- Botão pra calcular -->
+  <button type="submit">Calcular Impacto</button>
+</form>
 
-    <div class="footer">
-      <p>Desenvolvido por Matheus Barbalho</p>
-      <p>UNISANTA - Projeto de Extensão Curricular</p>
-    </div>
-  </div>
+<!-- Resultados (começa escondido) -->
+<div class="results" id="results" style="display:none;">
+  <h2>Seu Impacto na População</h2>
+  <p id="mensagemGeral"></p>
+  <p id="percentualAgua"></p>
+  <p id="percentualEnergia"></p>
+  <p id="percentualTransporte"></p>
+  <canvas id="grafico" width="400" height="250"></canvas>
+  <p style="font-size: 0.8rem; margin-top: 10px; color: #444;">
+    *Valores aproximados pra ter uma ideia geral
+  </p>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // Configurações base
-    const consumoAguaPorPessoa = 3.5; // m³ por pessoa
-    const taxaCO2 = 0.2; // kg/km (fonte: Cetesb)
-    
-    document.getElementById('ecoForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Pegando valores do form
-      const pessoas = parseInt(document.getElementById('pessoas').value);
-      const consumoEletrico = parseInt(document.getElementById('aparelhos').value);
-      const kmRodados = parseInt(document.getElementById('transporte').value);
-      
-      // Cálculos
-      const aguaTotal = (pessoas * consumoAguaPorPessoa * 1000).toFixed(0);
-      const co2Total = (kmRodados * taxaCO2).toFixed(1);
-      
-      // Exibindo resultados
-      document.getElementById('resultAgua').innerHTML = `
-        <div class="result-value">Água: ${aguaTotal} litros/mês</div>
-        <p>${getMensagemAgua(aguaTotal)}</p>
-      `;
-      
-      document.getElementById('resultEnergia').innerHTML = `
-        <div class="result-value">Energia: ${consumoEletrico} kWh/mês</div>
-        <p>${getMensagemEnergia(consumoEletrico)}</p>
-      `;
-      
-      document.getElementById('resultTransporte').innerHTML = `
-        <div class="result-value">CO₂: ${co2Total} kg/mês</div>
-        <p>${getMensagemTransporte(co2Total)}</p>
-      `;
-      
-      document.getElementById('results').style.display = 'block';
-      
-      // Scroll para resultados
-      window.scrollTo({
-        top: document.getElementById('results').offsetTop - 50,
-        behavior: 'smooth'
-      });
+<!-- Biblioteca pro gráfico -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Pega os elementos do HTML
+  const form = document.getElementById('ecoForm');
+  const results = document.getElementById('results');
+  const mensagemGeral = document.getElementById('mensagemGeral');
+  const percentualAgua = document.getElementById('percentualAgua');
+  const percentualEnergia = document.getElementById('percentualEnergia');
+  const percentualTransporte = document.getElementById('percentualTransporte');
+  const ctx = document.getElementById('grafico').getContext('2d');
+  let chart;
+
+  // Valores base pros cálculos
+  const mediaAguaPorPessoa_m3 = 3.5; // m³ por pessoa
+  const mediaEnergiaPorDomicilio_kWh = 160; 
+  const mediaCO2PorDomicilio_kg = 40;
+  const popMunicipio = 360000;
+  const pessoasPorDomicilio = 3;
+  const m3ToLitros = 1000; // Converte m³ pra litros
+
+  // Quando enviar o formulário
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Pega os valores digitados
+    const pessoas = parseInt(form.pessoas.value);
+    const aparelhos = form.aparelhos.value;
+    const transporte = form.transporte.value;
+
+    // Calcula consumo de água
+    const consumoAgua_m3 = pessoas * mediaAguaPorPessoa_m3;
+    const consumoAgua_litros = consumoAgua_m3 * m3ToLitros;
+
+    // Calcula consumo de energia
+    let consumoEnergia_kWh;
+    switch(aparelhos) {
+      case 'poucos': consumoEnergia_kWh = 80; break;
+      case 'medios': consumoEnergia_kWh = 160; break;
+      case 'muitos': consumoEnergia_kWh = 240; break;
+    }
+
+    // Calcula emissão de CO2
+    let kmMensais;
+    switch(transporte) {
+      case 'nao': kmMensais = 0; break;
+      case 'baixo': kmMensais = 70; break;
+      case 'medio': kmMensais = 200; break;
+      case 'alto': kmMensais = 400; break;
+    }
+    const co2PorKm = 0.2;
+    const consumoCO2_kg = kmMensais * co2PorKm;
+
+    // Mostra os resultados
+    percentualAgua.textContent = `Água consumida: ${consumoAgua_litros.toFixed(0)} litros/mês`;
+    percentualEnergia.textContent = `Energia consumida: ${consumoEnergia_kWh} kWh/mês`;
+    percentualTransporte.textContent = `CO2 emitido: ${consumoCO2_kg.toFixed(1)} kg/mês`;
+
+    results.style.display = 'block';
+
+    // Configura o gráfico
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Você', 'Média da cidade'],
+        datasets: [
+          {
+            label: 'Água (litros)',
+            data: [consumoAgua_litros, 10500000],
+            backgroundColor: ['#4a90e2', '#a0c4ff']
+          },
+          {
+            label: 'Energia (kWh)',
+            data: [consumoEnergia_kWh, 160],
+            backgroundColor: ['#f5a623', '#ffd580']
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
     });
-    
-    function getMensagemAgua(litros) {
-      if (litros < 8000) return "Tá economizando bem! 💧";
-      if (litros < 12000) return "Na média... Dá pra melhorar!";
-      return "Consumo alto! Checa vazamentos e reduz o tempo no banho!";
-    }
-    
-    function getMensagemEnergia(kWh) {
-      if (kWh < 100) return "Boa! Tá usando energia certinho! 💡";
-      if (kWh < 180) return "Tá na média, mas desliga os aparelhos da tomada!";
-      return "Tá gastando muito! Reveja seus eletrônicos!";
-    }
-    
-    function getMensagemTransporte(kgCO2) {
-      if (kgCO2 < 10) return "Tá de bike? Eco-friendly! 🌱";
-      if (kgCO2 < 30) return "Que tal tentar carona solidária?";
-      return "Tá pegando pesado no transporte! Tenta alternativas!";
-    }
-  </script>
+  });
+</script>
+
 </body>
 </html>
