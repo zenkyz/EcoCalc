@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>EcoCalc - São Vicente</title>
 <style>
-  /* (MANTIDO EXATAMENTE IGUAL AO SEU ESTILO ORIGINAL) */
+  /* (ESTILO) */
   body {
     margin: 0; padding: 20px;
     font-family: 'Montserrat', sans-serif;
@@ -85,49 +85,59 @@
 
 <h1>EcoCalc - São Vicente</h1>
 
-<!-- FORMULÁRIO SIMPLIFICADO -->
+<!-- FORMULÁRIO ORIGINAL COM CAMPOS NUMÉRICOS -->
 <form id="ecoForm" style="max-width:480px; width:100%;">
   
-  <!-- Número de pessoas (mantido) -->
-  <label for="pessoas">Quantas pessoas moram na casa?</label>
+  <!-- 1. Número de pessoas -->
+  <label for="pessoas">Quantas pessoas na casa?</label>
   <input type="number" id="pessoas" min="1" value="3" required>
 
-  <!-- ÁGUA - Versão super simplificada -->
-  <label for="consumoAgua">Seu consumo de água:</label>
-  <select id="consumoAgua" required>
-    <option value="" disabled selected>Escolha seu perfil</option>
-    <option value="economico">Economizo água (banhos rápidos, fecho torneiras)</option>
-    <option value="normal">Uso normal (cuidado básico)</option>
-    <option value="alto">Uso bastante (banhos longos, lavo quintal com mangueira)</option>
-  </select>
+  <!-- 2. ÁGUA - Input numérico em m³ (com exemplo em litros) -->
+  <label for="agua">Consumo de água (m³/mês):</label>
+  <input type="number" id="agua" step="0.1" min="1" value="10.5" required>
+  <small style="display:block; text-align:center; color:#666">Ex: 10,5m³ = 10.500 litros</small>
 
-  <!-- (Mantidos os outros campos originais) -->
-  <label for="aparelhos">Uso de aparelhos elétricos:</label>
-  <select id="aparelhos" required>
-    <option value="" disabled selected>Selecione</option>
-    <option value="poucos">Poucos (apenas essenciais)</option>
-    <option value="medios">Médio (alguns eletrônicos)</option>
-    <option value="muitos">Muitos (muitos aparelhos ligados)</option>
-  </select>
+  <!-- 3. ENERGIA - Input numérico -->
+  <label for="energia">Consumo de energia (kWh/mês):</label>
+  <input type="number" id="energia" min="1" value="160" required>
 
-  <label for="transporte">Uso de transporte:</label>
-  <select id="transporte" required>
-    <option value="" disabled selected>Selecione</option>
-    <option value="nao">Não uso carro/moto</option>
-    <option value="baixo">Pouco (até 2x por semana)</option>
-    <option value="medio">Moderado (3-5x por semana)</option>
-    <option value="alto">Muito (todo dia ou viagens)</option>
-  </select>
+  <!-- 4. TRANSPORTE - Quilometragem -->
+  <label for="km">Quilômetros rodados (mês):</label>
+  <input type="number" id="km" min="0" value="200" required>
 
-  <button type="submit">Calcular</button>
+  <button type="submit">Calcular Impacto</button>
 </form>
 
-<!-- RESULTADOS (visual original) -->
+<!-- RESULTADOS NUMÉRICOS DETALHADOS -->
 <div class="results" id="results" style="display:none;">
-  <h2>Seu Resultado</h2>
-  <div id="resultContent"></div>
-  <p style="font-size: 0.8rem; margin-top: 10px; color: #444;">
-    *Compare com seus hábitos mensais
+  <h2>Seu Impacto Detalhado</h2>
+  
+  <!-- ÁGUA -->
+  <div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-bottom:15px;">
+    <h3>💧 Água</h3>
+    <p><strong>Total:</strong> <span id="totalAgua"></span> litros/mês</p>
+    <p><strong>Por pessoa:</strong> <span id="aguaPorPessoa"></span> litros/dia</p>
+    <p id="msgAgua" style="font-weight:600;"></p>
+  </div>
+
+  <!-- ENERGIA -->
+  <div style="background:#fffae6; padding:10px; border-radius:8px; margin-bottom:15px;">
+    <h3>⚡ Energia</h3>
+    <p><strong>Consumo:</strong> <span id="totalEnergia"></span> kWh/mês</p>
+    <p><strong>Equivalente:</strong> <span id="equivEnergia"></span> horas de TV</p>
+    <p id="msgEnergia" style="font-weight:600;"></p>
+  </div>
+
+  <!-- TRANSPORTE -->
+  <div style="background:#f0ffe6; padding:10px; border-radius:8px;">
+    <h3>🚗 Transporte</h3>
+    <p><strong>Quilometragem:</strong> <span id="totalKm"></span> km/mês</p>
+    <p><strong>CO₂ emitido:</strong> <span id="totalCO2"></span> kg</p>
+    <p id="msgTransporte" style="font-weight:600;"></p>
+  </div>
+
+  <p style="font-size:0.8rem; color:#666; margin-top:20px;">
+    *Baseado em médias de consumo da região
   </p>
 </div>
 
@@ -140,83 +150,56 @@
   document.getElementById('ecoForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Captura simplificada
+    // CAPTURA DOS VALORES (todos numéricos)
     const pessoas = parseInt(document.getElementById('pessoas').value);
-    const perfilAgua = document.getElementById('consumoAgua').value;
-    const aparelhos = document.getElementById('aparelhos').value;
-    const transporte = document.getElementById('transporte').value;
+    const aguaM3 = parseFloat(document.getElementById('agua').value);
+    const energia = parseInt(document.getElementById('energia').value);
+    const km = parseInt(document.getElementById('km').value);
 
-    // CÁLCULO ÁGUA SUPER SIMPLES
-    let aguaMsg, aguaLitros;
-    if (perfilAgua === 'economico') {
-      aguaLitros = pessoas * 2500; // ~2,5m³ por pessoa
-      aguaMsg = "✅ <strong>Água:</strong> Você é econômico! Continue assim.";
-    } 
-    else if (perfilAgua === 'normal') {
-      aguaLitros = pessoas * 3500; // ~3,5m³
-      aguaMsg = "⚠️ <strong>Água:</strong> Na média. Banhos mais curtos ajudam!";
-    } 
-    else {
-      aguaLitros = pessoas * 6000; // ~6m³
-      aguaMsg = "🚨 <strong>Água:</strong> Consumo alto! Reduza tempo no chuveiro e reutilize água.";
-    }
+    // CÁLCULOS DA ÁGUA
+    const aguaLitros = aguaM3 * 1000;
+    const litrosPorPessoaDia = (aguiaLitros / pessoas / 30).toFixed(0);
 
-    // (Restante mantido igual)
-    let energiaMsg, energiaKwh;
-    switch(aparelhos) {
-      case 'poucos': 
-        energiaKwh = 80; 
-        energiaMsg = "✅ <strong>Energia:</strong> Ótimo!";
-        break;
-      case 'medios': 
-        energiaKwh = 160; 
-        energiaMsg = "⚠️ <strong>Energia:</strong> Pode melhorar!";
-        break;
-      default: 
-        energiaKwh = 240; 
-        energiaMsg = "🚨 <strong>Energia:</strong> Muito alto!";
-    }
+    // CÁLCULOS DE ENERGIA
+    const horasTV = (energia / 0.2).toFixed(0); // TV de 200W
 
-    let transporteMsg, co2;
-    switch(transporte) {
-      case 'nao': 
-        co2 = 0; 
-        transporteMsg = "✅ <strong>Transporte:</strong> Eco-friendly!"; 
-        break;
-      case 'baixo': 
-        co2 = 14; 
-        transporteMsg = "⚠️ <strong>Transporte:</strong> Tente alternativas!"; 
-        break;
-      case 'medio': 
-        co2 = 40; 
-        transporteMsg = "⚠️ <strong>Transporte:</strong> Considere caronas!"; 
-        break;
-      default: 
-        co2 = 80; 
-        transporteMsg = "🚨 <strong>Transporte:</strong> Poluente demais!";
-    }
+    // CÁLCULOS DE TRANSPORTE
+    const co2 = (km * 0.2).toFixed(1); // 0.2kg CO2 por km
 
-    // Exibição super clara
-    document.getElementById('resultContent').innerHTML = `
-      <p>💧 <strong>Água:</strong> ~${(aguiaLitros/1000).toFixed(1)}m³/mês (${(aguiaLitros/pessoas/30).toFixed(0)}L/dia por pessoa)</p>
-      <p>${aguaMsg}</p>
-      
-      <p>⚡ <strong>Energia:</strong> ~${energiaKwh}kWh/mês</p>
-      <p>${energiaMsg}</p>
-      
-      <p>🚗 <strong>CO2:</strong> ~${co2}kg/mês</p>
-      <p>${transporteMsg}</p>
-      
-      <div style="background:#f8f9fa; padding:12px; border-radius:8px; margin-top:15px;">
-        <h4>Dicas rápidas:</h4>
-        <p>• Banho de 5min economiza 75L</p>
-        <p>• Desligar aparelhos da tomada reduz 5% da conta</p>
-        <p>• 1 dia sem carro = menos 5kg de CO2</p>
-      </div>
-    `;
+    // EXIBIÇÃO DOS RESULTADOS
+    document.getElementById('totalAgua').textContent = aguaLitros.toLocaleString('pt-BR');
+    document.getElementById('aguaPorPessoa').textContent = litrosPorPessoaDia;
+    document.getElementById('totalEnergia').textContent = energia;
+    document.getElementById('equivEnergia').textContent = horasTV;
+    document.getElementById('totalKm').textContent = km;
+    document.getElementById('totalCO2').textContent = co2;
 
+    // MENSAGENS PERSONALIZADAS
+    document.getElementById('msgAgua').innerHTML = getMsgAgua(litrosPorPessoaDia);
+    document.getElementById('msgEnergia').innerHTML = getMsgEnergia(energia);
+    document.getElementById('msgTransporte').innerHTML = getMsgTransporte(km);
+
+    // MOSTRA RESULTADOS
     document.getElementById('results').style.display = 'block';
   });
+
+  function getMsgAgua(litrosDia) {
+    if (litrosDia > 150) return "🚨 Consumo ALTO! Reduza banhos e vazamentos";
+    else if (litrosDia > 100) return "⚠️ Na média. Dica: Torneira fechada ao escovar dentes = 12L/min";
+    else return "✅ Consumo BOM! Continue economizando";
+  }
+
+  function getMsgEnergia(kWh) {
+    if (kWh > 200) return "🚨 Alto consumo! Desligue aparelhos em standby";
+    else if (kWh > 120) return "⚠️ Moderado. Use luz natural quando possível";
+    else return "✅ Eficiente! Parabéns";
+  }
+
+  function getMsgTransporte(km) {
+    if (km > 300) return "🚨 Poluente! Tente transporte público 2x/semana";
+    else if (km > 100) return "⚠️ Razoável. Caronas reduzem emissões";
+    else return "✅ Sustentável! Ótima escolha";
+  }
 </script>
 </body>
 </html>
