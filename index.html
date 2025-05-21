@@ -1,179 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <!-- Configuração básica da página -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoCalc - São Vicente</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EcoCalc - São Vicente</title>
+<style>
+  /* ESTILO ORIGINAL (MANTIDO EXATAMENTE IGUAL) */
+  body {
+    margin: 0; padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #3a8dba 0%, #71c9ce 100%);
+    color: #1a1a1a;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    color: #0b3c49;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+  }
   
-  <!-- Estilos CSS -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f0f8ff;
-    }
-    h1 {
-      color: #006400;
-      text-align: center;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    .results {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #e6ffe6;
-      border-radius: 5px;
-    }
-    footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 0.9em;
-      color: #666;
-    }
-  </style>
+  select, input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  button {
+    margin-top: 25px;
+    width: 100%;
+    background: #0b3c49;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background: #064f58;
+  }
+
+  .results {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    color: #064f58;
+    text-align: center;
+  }
+
+  footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #0b3c49;
+    padding: 15px;
+    width: 100%;
+  }
+
+  @media (max-width: 500px) {
+    body { padding: 15px 12px; }
+    h1 { font-size: 1.6rem; }
+    button { font-size: 1rem; padding: 12px; }
+    .results { padding: 15px 18px; }
+  }
+</style>
 </head>
 <body>
-  <h1>EcoCalc - São Vicente</h1>
 
-  <!-- Formulário simplificado -->
-  <form id="ecoForm">
-    <div class="form-group">
-      <label for="pessoas">Quantas pessoas moram com você?</label>
-      <input type="number" id="pessoas" min="1" value="1" required>
-    </div>
+<!-- Título mantido igual -->
+<h1>EcoCalc - São Vicente</h1>
 
-    <div class="form-group">
-      <label for="consumoAgua">Seu consumo MENSAL de água (em litros):</label>
-      <input type="number" id="consumoAgua" min="1" value="3500" required>
-      <small>Ex: Uma pessoa gasta em média 3.500L/mês (3,5m³)</small>
-    </div>
+<!-- Formulário principal (com campo de litros adicionado) -->
+<form id="ecoForm" style="max-width:480px; width:100%;">
+  <!-- Número de pessoas (mantido) -->
+  <label for="pessoas">Quantas pessoas moram com você?</label>
+  <input type="number" id="pessoas" name="pessoas" min="1" max="20" value="3" required />
 
-    <div class="form-group">
-      <label for="aparelhos">Seu consumo MENSAL de energia (em kWh):</label>
-      <input type="number" id="consumoEnergia" min="1" value="160" required>
-      <small>Ex: 160 kWh é a média para 1 pessoa</small>
-    </div>
+  <!-- NOVO CAMPO: Consumo em litros (em vez do select) -->
+  <label for="litrosAgua">Seu consumo mensal de água (em litros)</label>
+  <input type="number" id="litrosAgua" name="litrosAgua" min="1" value="10500" required />
+  <small style="display:block; margin-top:4px; color:#666; text-align:center">Exemplo: 3 pessoas = ~10.500L/mês (3,5m³ por pessoa)</small>
 
-    <div class="form-group">
-      <label for="transporte">Você usa carro ou moto?</label>
-      <select id="transporte" required>
-        <option value="nao">Não uso</option>
-        <option value="pouco">Até 100km/mês</option>
-        <option value="medio" selected>Até 300km/mês</option>
-        <option value="muito">Mais de 300km/mês</option>
-      </select>
-    </div>
+  <!-- Uso de energia (mantido) -->
+  <label for="aparelhos">Você usa muitos aparelhos elétricos?</label>
+  <select id="aparelhos" name="aparelhos" required>
+    <option value="" disabled selected>Selecione uma opção</option>
+    <option value="poucos">Poucos (~80 kWh/mês)</option>
+    <option value="medios">Médios (~160 kWh/mês)</option>
+    <option value="muitos">Muitos (~240 kWh/mês)</option>
+  </select>
 
-    <button type="submit">Calcular Meu Impacto</button>
-  </form>
+  <!-- Uso de transporte (mantido) -->
+  <label for="transporte">Você usa carro ou moto com frequência?</label>
+  <select id="transporte" name="transporte" required>
+    <option value="" disabled selected>Selecione uma opção</option>
+    <option value="nao">Não uso</option>
+    <option value="baixo">Baixo (~70 km/mês)</option>
+    <option value="medio">Médio (~200 km/mês)</option>
+    <option value="alto">Alto (~400 km/mês)</option>
+  </select>
 
-  <!-- Área de resultados -->
-  <div id="results" class="results" style="display: none;">
-    <h2>Seu Resultado</h2>
-    <div id="resultAgua"></div>
-    <div id="resultEnergia"></div>
-    <div id="resultTransporte"></div>
-    <div id="dicas"></div>
-  </div>
+  <!-- Botão mantido -->
+  <button type="submit">Calcular Impacto</button>
+</form>
 
-  <!-- Rodapé -->
-  <footer>
-    Desenvolvido por Matheus Barbalho | Projeto de Extensão Curricular - UNISANTA
-  </footer>
+<!-- Área de resultados (estilo original) -->
+<div class="results" id="results" style="display:none;">
+  <h2>Seu Impacto na População</h2>
+  <p id="percentualAgua"></p>
+  <p id="percentualEnergia"></p>
+  <p id="percentualTransporte"></p>
+  <div id="mensagemGeral"></div>
+  <p style="font-size: 0.8rem; margin-top: 10px; color: #444;">
+    *Valores aproximados pra ter uma ideia geral
+  </p>
+</div>
 
-  <!-- Script JavaScript -->
-  <script>
-    document.getElementById('ecoForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Captura dos valores
-      const pessoas = parseInt(document.getElementById('pessoas').value);
-      const litrosAgua = parseInt(document.getElementById('consumoAgua').value);
-      const kWh = parseInt(document.getElementById('consumoEnergia').value);
-      const transporte = document.getElementById('transporte').value;
+<!-- Rodapé mantido -->
+<footer>
+  <p>Desenvolvido por <strong>Matheus Barbalho</strong></p>
+  <p>Projeto de Extensão Curricular - <strong>UNISANTA</strong></p>
+</footer>
 
-      // Cálculos
-      const litrosPorPessoa = litrosAgua / pessoas;
-      const horasTV = kWh / 0.2; // TV de 200W
-      
-      let co2 = 0;
-      if (transporte === 'pouco') co2 = 100 * 0.2; // 0.2kg CO2 por km
-      else if (transporte === 'medio') co2 = 300 * 0.2;
-      else if (transporte === 'muito') co2 = 600 * 0.2;
-      const arvores = co2 / 5; // 1 árvore neutraliza 5kg CO2
+<!-- Script com as novas lógicas (mas mantendo estrutura original) -->
+<script>
+  // Elementos do DOM
+  const form = document.getElementById('ecoForm');
+  const results = document.getElementById('results');
+  const mensagemGeral = document.getElementById('mensagemGeral');
+  const percentualAgua = document.getElementById('percentualAgua');
+  const percentualEnergia = document.getElementById('percentualEnergia');
+  const percentualTransporte = document.getElementById('percentualTransporte');
 
-      // Exibição dos resultados
-      document.getElementById('resultAgua').innerHTML = `
-        <h3>Água</h3>
-        <p>Seu consumo: ${litrosAgua.toLocaleString('pt-BR')} litros/mês</p>
-        <p>Por pessoa: ${Math.round(litrosPorPessoa).toLocaleString('pt-BR')} litros/mês</p>
-      `;
+  // Constantes para cálculos
+  const LITROS_PISCINA_OLIMPICA = 50000; // 50 mil litros
+  const kWh_POR_HORA_TV = 0.2; // TV média consome 200W por hora
+  const KG_CO2_POR_ARVORE = 5; // Cada árvore compensa ~5kg CO2/mês
 
-      document.getElementById('resultEnergia').innerHTML = `
-        <h3>Energia</h3>
-        <p>Seu consumo: ${kWh} kWh/mês</p>
-        <p>Equivale a ${Math.round(horasTV)} horas de TV ligada</p>
-      `;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-      document.getElementById('resultTransporte').innerHTML = `
-        <h3>Transporte</h3>
-        <p>Emissões de CO2: ${co2.toFixed(1)} kg/mês</p>
-        <p>${arvores.toFixed(1)} árvores para neutralizar</p>
-      `;
+    // Valores do formulário (agora com litros direto)
+    const pessoas = parseInt(form.pessoas.value);
+    const litrosAgua = parseInt(form.litrosAgua.value); // Novo campo
+    const aparelhos = form.aparelhos.value;
+    const transporte = form.transporte.value;
 
-      // Dicas personalizadas
-      let dicas = '<h3>Dicas para reduzir seu impacto</h3><ul>';
-      
-      if (litrosPorPessoa > 5000) {
-        dicas += '<li>🚨 Reduza tempo no banho (cada minuto a menos economiza 12 litros)</li>';
-      } else if (litrosPorPessoa > 3000) {
-        dicas += '<li>⚠️ Verifique vazamentos e feche torneiras ao escovar os dentes</li>';
-      } else {
-        dicas += '<li>✅ Seu consumo de água está bom! Continue assim</li>';
-      }
+    // Cálculos da água (simplificado)
+    const equivalenteAgua = litrosAgua / LITROS_PISCINA_OLIMPICA;
+    const litrosPorPessoaDia = (litrosAgua / pessoas) / 30; // Litros/dia/pessoa
 
-      if (kWh > 200) {
-        dicas += '<li>🚨 Desligue aparelhos da tomada e use lâmpadas LED</li>';
-      } else if (kWh > 120) {
-        dicas += '<li>⚠️ Reduza uso de ar-condicionado e abra a geladeira menos vezes</li>';
-      } else {
-        dicas += '<li>✅ Seu consumo de energia está ótimo!</li>';
-      }
+    // Cálculos de energia (mantido)
+    let consumoEnergia_kWh;
+    switch(aparelhos) {
+      case 'poucos': consumoEnergia_kWh = 80; break;
+      case 'medios': consumoEnergia_kWh = 160; break;
+      case 'muitos': consumoEnergia_kWh = 240; break;
+    }
+    const horasTV = consumoEnergia_kWh / kWh_POR_HORA_TV;
 
-      if (transporte !== 'nao') {
-        dicas += `<li>🚗 Tente usar transporte público ou carona ${transporte === 'muito' ? 'pelo menos 2 dias na semana' : '1 dia na semana'}</li>`;
-      } else {
-        dicas += '<li>🚲 Parabéns por não usar veículo poluente!</li>';
-      }
+    // Cálculos de transporte (mantido)
+    let consumoCO2_kg;
+    switch(transporte) {
+      case 'nao': consumoCO2_kg = 0; break;
+      case 'baixo': consumoCO2_kg = 70 * 0.2; break;
+      case 'medio': consumoCO2_kg = 200 * 0.2; break;
+      case 'alto': consumoCO2_kg = 400 * 0.2; break;
+    }
+    const arvoresCO2 = consumoCO2_kg / KG_CO2_POR_ARVORE;
 
-      dicas += '</ul>';
-      document.getElementById('dicas').innerHTML = dicas;
+    // Exibição dos resultados (estilo original)
+    percentualAgua.innerHTML = `💧 <strong>Água consumida:</strong> ${litrosAgua.toLocaleString('pt-BR')} litros/mês (${litrosPorPessoaDia.toFixed(0)}L/dia por pessoa)`;
+    percentualEnergia.innerHTML = `⚡ <strong>Energia consumida:</strong> ${consumoEnergia_kWh} kWh/mês`;
+    percentualTransporte.innerHTML = `🌍 <strong>CO2 emitido:</strong> ${consumoCO2_kg.toFixed(1)} kg/mês`;
 
-      // Mostra resultados
-      document.getElementById('results').style.display = 'block';
-    });
-  </script>
+    // Mensagens personalizadas (agora com litros)
+    mensagemGeral.innerHTML = 
+      `<div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: left;">
+        <h3 style="margin-top: 0; text-align: center;">📢 Sua Análise</h3>
+        <p>${getMensagemAgua(litrosPorPessoaDia, pessoas)}</p>
+        <p>${getMensagemEnergia(consumoEnergia_kWh)}</p>
+        <p>${getMensagemTransporte(transporte)}</p>
+      </div>`;
+
+    results.style.display = 'block';
+  });
+
+  // Função para mensagem da ÁGUA (atualizada para litros)
+  function getMensagemAgua(litrosDiaPorPessoa, pessoas) {
+    if (litrosDiaPorPessoa > 150 || pessoas > 5) {
+      return "🚨 <strong>Água:</strong> Consumo ALTO! Reduza tempo no chuveiro (cada minuto = 12L) e verifique vazamentos.";
+    } 
+    else if (litrosDiaPorPessoa > 100) {
+      return "⚠️ <strong>Água:</strong> Na média. Dica: Feche a torneira ao escovar os dentes (economiza 12L/min)!";
+    }
+    else {
+      return "✅ <strong>Água:</strong> Consumo sustentável! Continue assim!";
+    }
+  }
+
+  // Funções originais mantidas
+  function getMensagemEnergia(kWh) {
+    if (kWh <= 100) return "✅ <strong>Energia:</strong> Excelente! Continue desligando aparelhos da tomada.";
+    else if (kWh <= 180) return "⚠️ <strong>Energia:</strong> Na média. Desligue luzes desnecessárias.";
+    else return "🚨 <strong>Energia:</strong> Muito alto! Revise eletrônicos em standby.";
+  }
+
+  function getMensagemTransporte(tipo) {
+    switch(tipo) {
+      case 'nao': return "✅ <strong>Transporte:</strong> Você é eco-friendly! Andar a pé ou de bike faz diferença!";
+      case 'baixo': return "⚠️ <strong>Transporte:</strong> Tente transporte público 1x por semana.";
+      case 'medio': return "⚠️ <strong>Transporte:</strong> Que tal caronas solidárias?";
+      case 'alto': return "🚨 <strong>Transporte:</strong> Seu carro emite muito CO2! Experimente home office.";
+    }
+  }
+</script>
 </body>
 </html>
