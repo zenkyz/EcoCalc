@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>EcoCalc - São Vicente</title>
 <style>
-  /* Configuração geral da página */
   body {
     margin: 0; padding: 20px;
     font-family: 'Montserrat', sans-serif;
@@ -16,7 +15,6 @@
     box-sizing: border-box;
   }
 
-  /* Estilo do título principal */
   h1 {
     margin-bottom: 10px;
     font-weight: 700;
@@ -26,14 +24,12 @@
     text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
   }
 
-  /* Formulário de inputs */
   label {
     display: block;
     margin-top: 15px;
     font-weight: 600;
   }
   
-  /* Campos de entrada */
   select, input[type="number"] {
     width: 100%;
     padding: 10px 12px;
@@ -44,7 +40,6 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
 
-  /* Botão de calcular */
   button {
     margin-top: 25px;
     width: 100%;
@@ -60,12 +55,10 @@
     transition: background 0.3s ease;
   }
   
-  /* Efeito quando passa o mouse */
   button:hover {
     background: #064f58;
   }
 
-  /* Área de resultados (aparece depois) */
   .results {
     margin-top: 30px;
     width: 100%;
@@ -75,10 +68,9 @@
     padding: 18px 22px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     color: #064f58;
-    text-align: center;
+    text-align: left;
   }
 
-  /* Ajustes pra mobile */
   @media (max-width: 500px) {
     body { padding: 15px 12px; }
     h1 { font-size: 1.6rem; }
@@ -89,16 +81,12 @@
 </head>
 <body>
 
-<!-- Título da página -->
 <h1>EcoCalc - São Vicente</h1>
 
-<!-- Formulário principal -->
 <form id="ecoForm" style="max-width:480px; width:100%;">
-  <!-- Input: número de pessoas -->
   <label for="pessoas">Quantas pessoas moram com você?</label>
   <input type="number" id="pessoas" name="pessoas" min="1" max="20" value="3" required />
 
-  <!-- Select: uso de eletrônicos -->
   <label for="aparelhos">Você usa muitos aparelhos elétricos?</label>
   <select id="aparelhos" name="aparelhos" required>
     <option value="" disabled selected>Selecione uma opção</option>
@@ -107,7 +95,6 @@
     <option value="muitos">Muitos (~240 kWh/mês)</option>
   </select>
 
-  <!-- Select: uso de transporte -->
   <label for="transporte">Você usa carro ou moto com frequência?</label>
   <select id="transporte" name="transporte" required>
     <option value="" disabled selected>Selecione uma opção</option>
@@ -117,112 +104,102 @@
     <option value="alto">Alto (~400 km/mês)</option>
   </select>
 
-  <!-- Botão pra calcular -->
   <button type="submit">Calcular Impacto</button>
 </form>
 
-<!-- Resultados (começa escondido) -->
 <div class="results" id="results" style="display:none;">
-  <h2>Seu Impacto na População</h2>
-  <p id="mensagemGeral"></p>
+  <h2>Seu Impacto Ambiental</h2>
   <p id="percentualAgua"></p>
   <p id="percentualEnergia"></p>
   <p id="percentualTransporte"></p>
-  <canvas id="grafico" width="400" height="250"></canvas>
-  <p style="font-size: 0.8rem; margin-top: 10px; color: #444;">
-    *Valores aproximados pra ter uma ideia geral
+  <div id="mensagemGeral"></div>
+  <p style="font-size: 0.8rem; margin-top: 20px; color: #444;">
+    *Valores aproximados para conscientização.
   </p>
 </div>
 
-<!-- Biblioteca pro gráfico -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Pega os elementos do HTML
+  // Elementos do DOM
   const form = document.getElementById('ecoForm');
   const results = document.getElementById('results');
   const mensagemGeral = document.getElementById('mensagemGeral');
   const percentualAgua = document.getElementById('percentualAgua');
   const percentualEnergia = document.getElementById('percentualEnergia');
   const percentualTransporte = document.getElementById('percentualTransporte');
-  const ctx = document.getElementById('grafico').getContext('2d');
-  let chart;
 
-  // Valores base pros cálculos
-  const mediaAguaPorPessoa_m3 = 3.5; // m³ por pessoa
-  const mediaEnergiaPorDomicilio_kWh = 160; 
-  const mediaCO2PorDomicilio_kg = 40;
-  const popMunicipio = 360000;
-  const pessoasPorDomicilio = 3;
-  const m3ToLitros = 1000; // Converte m³ pra litros
+  // Constantes para cálculos
+  const LITROS_PISCINA_OLIMPICA = 50000; // 50 mil litros
+  const kWh_POR_HORA_TV = 0.2; // TV média consome 200W por hora
+  const KG_CO2_POR_ARVORE = 5; // Cada árvore compensa ~5kg CO2/mês
 
-  // Quando enviar o formulário
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Pega os valores digitados
+    // Captura dos valores
     const pessoas = parseInt(form.pessoas.value);
     const aparelhos = form.aparelhos.value;
     const transporte = form.transporte.value;
 
-    // Calcula consumo de água
-    const consumoAgua_m3 = pessoas * mediaAguaPorPessoa_m3;
-    const consumoAgua_litros = consumoAgua_m3 * m3ToLitros;
+    // Cálculos
+    const consumoAgua_litros = pessoas * 3.5 * 1000; // 3.5m³ por pessoa → litros
+    const equivalenteAgua = consumoAgua_litros / LITROS_PISCINA_OLIMPICA;
 
-    // Calcula consumo de energia
     let consumoEnergia_kWh;
     switch(aparelhos) {
       case 'poucos': consumoEnergia_kWh = 80; break;
       case 'medios': consumoEnergia_kWh = 160; break;
       case 'muitos': consumoEnergia_kWh = 240; break;
     }
+    const horasTV = consumoEnergia_kWh / kWh_POR_HORA_TV;
 
-    // Calcula emissão de CO2
-    let kmMensais;
+    let consumoCO2_kg;
     switch(transporte) {
-      case 'nao': kmMensais = 0; break;
-      case 'baixo': kmMensais = 70; break;
-      case 'medio': kmMensais = 200; break;
-      case 'alto': kmMensais = 400; break;
+      case 'nao': consumoCO2_kg = 0; break;
+      case 'baixo': consumoCO2_kg = 70 * 0.2; break; // 0.2kg CO2 por km
+      case 'medio': consumoCO2_kg = 200 * 0.2; break;
+      case 'alto': consumoCO2_kg = 400 * 0.2; break;
     }
-    const co2PorKm = 0.2;
-    const consumoCO2_kg = kmMensais * co2PorKm;
+    const arvoresCO2 = consumoCO2_kg / KG_CO2_POR_ARVORE;
 
-    // Mostra os resultados
-    percentualAgua.textContent = `Água consumida: ${consumoAgua_litros.toFixed(0)} litros/mês`;
-    percentualEnergia.textContent = `Energia consumida: ${consumoEnergia_kWh} kWh/mês`;
-    percentualTransporte.textContent = `CO2 emitido: ${consumoCO2_kg.toFixed(1)} kg/mês`;
+    // Exibição dos resultados
+    percentualAgua.innerHTML = `💧 <strong>Água usada:</strong> ${equivalenteAgua.toFixed(2)} piscinas olímpicas (${consumoAgua_litros.toLocaleString('pt-BR')} litros)`;
+    percentualEnergia.innerHTML = `📺 <strong>Energia:</strong> Equivale a ${horasTV.toFixed(0)} horas de TV ligada (${consumoEnergia_kWh} kWh)`;
+    percentualTransporte.innerHTML = `🌳 <strong>CO2 emitido:</strong> Neutralize plantando ${arvoresCO2.toFixed(1)} árvores (${consumoCO2_kg.toFixed(1)} kg)`;
+
+    // Mensagens personalizadas
+    mensagemGeral.innerHTML = 
+      `<div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+        <h3 style="margin-top: 0;">📢 Sua Análise:</h3>
+        <p>${getMensagemAgua(consumoAgua_litros)}</p>
+        <p>${getMensagemEnergia(consumoEnergia_kWh)}</p>
+        <p>${getMensagemTransporte(transporte)}</p>
+      </div>`;
 
     results.style.display = 'block';
-
-    // Configura o gráfico
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Você', 'Média da cidade'],
-        datasets: [
-          {
-            label: 'Água (litros)',
-            data: [consumoAgua_litros, 10500000],
-            backgroundColor: ['#4a90e2', '#a0c4ff']
-          },
-          {
-            label: 'Energia (kWh)',
-            data: [consumoEnergia_kWh, 160],
-            backgroundColor: ['#f5a623', '#ffd580']
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
   });
+
+  // Funções para mensagens dinâmicas
+  function getMensagemAgua(litros) {
+    const media = 105000; // Média de referência
+    if (litros < media * 0.7) return "✅ <strong>Água:</strong> Você é um exemplo! Continue fechando torneiras e reutilizando água.";
+    else if (litros <= media) return "⚠️ <strong>Água:</strong> Dá pra reduzir! Prefira duchas rápidas e conserte vazamentos.";
+    else return "🚨 <strong>Água:</strong> Alto consumo! Verifique vazamentos e evite lavar calçadas com mangueira.";
+  }
+
+  function getMensagemEnergia(kWh) {
+    if (kWh <= 100) return "✅ <strong>Energia:</strong> Excelente! Desligar aparelhos da tomada faz toda diferença.";
+    else if (kWh <= 180) return "⚠️ <strong>Energia:</strong> Na média. Desligue luzes desnecessárias e use ventilador em vez de ar-condicionado.";
+    else return "🚨 <strong>Energia:</strong> Muito alto! Revise eletrônicos ligados sem uso e opte por lâmpadas LED.";
+  }
+
+  function getMensagemTransporte(tipo) {
+    switch(tipo) {
+      case 'nao': return "✅ <strong>Transporte:</strong> Você é eco-friendly! Andar a pé ou de bike salva o planeta.";
+      case 'baixo': return "⚠️ <strong>Transporte:</strong> Tente alternativas como transporte público 1x por semana.";
+      case 'medio': return "⚠️ <strong>Transporte:</strong> Que tal caronas solidárias para reduzir emissões?";
+      case 'alto': return "🚨 <strong>Transporte:</strong> Seu carro emite muito CO2! Experimente trabalhar de home office alguns dias.";
+    }
+  }
 </script>
 
 </body>
