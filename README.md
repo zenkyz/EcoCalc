@@ -10,7 +10,7 @@ Aplicação web que calcula o impacto ambiental individual com base em:
 - Emissões de CO2 por transporte
 
 **Fontes de dados oficiais**:
-- Medias de consumo da Sabesp (2023)
+- Medias de consumo da Sabesp
 - Fatores de emissão da Cetesb
 - Dados demográficos da prefeitura de São Vicente
 
