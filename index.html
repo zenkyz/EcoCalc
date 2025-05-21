@@ -71,6 +71,15 @@
     text-align: left;
   }
 
+  footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #0b3c49;
+    padding: 15px;
+    width: 100%;
+  }
+
   @media (max-width: 500px) {
     body { padding: 15px 12px; }
     h1 { font-size: 1.6rem; }
@@ -118,6 +127,11 @@
   </p>
 </div>
 
+<footer>
+  <p>Desenvolvido por <strong>Matheus Barbalho</strong></p>
+  <p>Projeto de Extensão Curricular - <strong>UNISANTA</strong></p>
+</footer>
+
 <script>
   // Elementos do DOM
   const form = document.getElementById('ecoForm');
@@ -131,6 +145,7 @@
   const LITROS_PISCINA_OLIMPICA = 50000; // 50 mil litros
   const kWh_POR_HORA_TV = 0.2; // TV média consome 200W por hora
   const KG_CO2_POR_ARVORE = 5; // Cada árvore compensa ~5kg CO2/mês
+  const MEDIA_AGUA_POR_PESSOA = 105; // 105L/pessoa/dia (fonte: SNIS)
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -170,7 +185,7 @@
     mensagemGeral.innerHTML = 
       `<div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
         <h3 style="margin-top: 0;">📢 Sua Análise:</h3>
-        <p>${getMensagemAgua(consumoAgua_litros)}</p>
+        <p>${getMensagemAgua(consumoAgua_litros, pessoas)}</p>
         <p>${getMensagemEnergia(consumoEnergia_kWh)}</p>
         <p>${getMensagemTransporte(transporte)}</p>
       </div>`;
@@ -179,11 +194,18 @@
   });
 
   // Funções para mensagens dinâmicas
-  function getMensagemAgua(litros) {
-    const media = 105000; // Média de referência
-    if (litros < media * 0.7) return "✅ <strong>Água:</strong> Você é um exemplo! Continue fechando torneiras e reutilizando água.";
-    else if (litros <= media) return "⚠️ <strong>Água:</strong> Dá pra reduzir! Prefira duchas rápidas e conserte vazamentos.";
-    else return "🚨 <strong>Água:</strong> Alto consumo! Verifique vazamentos e evite lavar calçadas com mangueira.";
+  function getMensagemAgua(litros, pessoas) {
+    const litrosPorPessoaDia = (litros / pessoas) / 30; // Converte para consumo diário por pessoa
+    
+    if (litrosPorPessoaDia > MEDIA_AGUA_POR_PESSOA || pessoas >= 5) {
+      return "🚨 <strong>Água:</strong> Consumo ALTO para seu domicílio! Reduza tempo no chuveiro e verifique vazamentos.";
+    } 
+    else if (litrosPorPessoaDia <= MEDIA_AGUA_POR_PESSOA * 0.7) {
+      return "✅ <strong>Água:</strong> Ótimo! Você está abaixo da média.";
+    } 
+    else {
+      return "⚠️ <strong>Água:</strong> Na média, mas pode melhorar!";
+    }
   }
 
   function getMensagemEnergia(kWh) {
