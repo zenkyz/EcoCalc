@@ -1,205 +1,201 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EcoCalc - São Vicente</title>
-<style>
-  /* (ESTILO) */
-  body {
-    margin: 0; padding: 20px;
-    font-family: 'Montserrat', sans-serif;
-    background: linear-gradient(135deg, #3a8dba 0%, #71c9ce 100%);
-    color: #1a1a1a;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh;
-    box-sizing: border-box;
-  }
-  h1 {
-    margin-bottom: 10px;
-    font-weight: 700;
-    font-size: 2rem;
-    text-align: center;
-    color: #0b3c49;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-  }
-  label {
-    display: block;
-    margin-top: 15px;
-    font-weight: 600;
-  }
-  select, input[type="number"] {
-    width: 100%;
-    padding: 10px 12px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  }
-  button {
-    margin-top: 25px;
-    width: 100%;
-    background: #0b3c49;
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #064f58;
-  }
-  .results {
-    margin-top: 30px;
-    width: 100%;
-    max-width: 480px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 12px;
-    padding: 18px 22px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    color: #064f58;
-    text-align: center;
-  }
-  footer {
-    margin-top: 40px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #0b3c49;
-    padding: 15px;
-    width: 100%;
-  }
-  @media (max-width: 500px) {
-    body { padding: 15px 12px; }
-    h1 { font-size: 1.6rem; }
-    button { font-size: 1rem; padding: 12px; }
-    .results { padding: 15px 18px; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCalc São Vicente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, #4db6ac, #80cbc4); /* Verde tropical suave */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #fff; /* Branco para contraste */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para destaque */
+        }
+        .subtitle {
+            text-align: center;
+            color: #f0f0f0;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.9); /* Fundo branco com leve transparência */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra mais suave */
+            margin: 20px auto;
+            max-width: 500px;
+            border: 2px solid #4db6ac; /* Borda verde suave */
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9); /* Fundo branco com leve transparência */
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #f0f0f0;
+        }
+        .hidden {
+            display: none;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #4db6ac; /* Borda verde suave */
+            border-radius: 4px;
+        }
+        button {
+            background-color: #00796b; /* Verde mais escuro */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s; /* Transição suave */
+        }
+        button:hover {
+            background-color: #004d40; /* Verde ainda mais escuro ao passar o mouse */
+        }
+        .aviso {
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #ff5722; /* Laranja para destaque */
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<h1>EcoCalc - São Vicente</h1>
+<h1>EcoCalc São Vicente</h1>
+<p class="subtitle">Calcule seu impacto ambiental com dados reais da cidade</p>
 
-<!-- FORMULÁRIO ORIGINAL COM CAMPOS NUMÉRICOS -->
-<form id="ecoForm" style="max-width:480px; width:100%;">
-  
-  <!-- 1. Número de pessoas -->
-  <label for="pessoas">Quantas pessoas na casa?</label>
-  <input type="number" id="pessoas" min="1" value="3" required>
+<div class="form-container">
+    <label for="pessoas">Pessoas na casa:</label>
+    <input type="number" id="pessoas" min="1" max="10" value="1">
 
-  <!-- 2. ÁGUA - Input numérico em m³ (com exemplo em litros) -->
-  <label for="agua">Consumo de água (m³/mês):</label>
-  <input type="number" id="agua" step="0.1" min="1" value="10.5" required>
-  <small style="display:block; text-align:center; color:#666">Ex: 10,5m³ = 10.500 litros</small>
+    <label for="agua">Água:</label>
+    <select id="agua" onchange="toggleInput('agua')">
+        <option value="medio">Usar média (110L/pessoa/dia)</option>
+        <option value="baixo">Baixo (80L/pessoa/dia)</option>
+        <option value="alto">Alto (150L/pessoa/dia)</option>
+        <option value="personalizado">Inserir meu consumo (litros/mês)</option>
+    </select>
+    <input type="number" id="aguaPersonalizado" class="hidden" placeholder="Litros/mês">
 
-  <!-- 3. ENERGIA - Input numérico -->
-  <label for="energia">Consumo de energia (kWh/mês):</label>
-  <input type="number" id="energia" min="1" value="160" required>
+    <label for="energia">Energia:</label>
+    <select id="energia" onchange="toggleInput('energia')">
+        <option value="medio">Usar média (180kWh)</option>
+        <option value="baixo">Baixo (120kWh)</option>
+        <option value="alto">Alto (250kWh)</option>
+        <option value="personalizado">Inserir meu consumo (kWh/mês)</option>
+    </select>
+    <input type="number" id="energiaPersonalizado" class="hidden" placeholder="kWh/mês">
 
-  <!-- 4. TRANSPORTE - Quilometragem -->
-  <label for="km">Quilômetros rodados (mês):</label>
-  <input type="number" id="km" min="0" value="200" required>
+    <label for="transporte">Transporte:</label>
+    <select id="transporte">
+        <option value="0">Não uso veículo</option>
+        <option value="70">Até 70km/mês</option>
+        <option value="200">Até 200km/mês</option>
+        <option value="400">Mais de 400km/mês</option>
+    </select>
 
-  <button type="submit">Calcular Impacto</button>
-</form>
+    <button onclick="calcularImpacto()">Calcular Impacto</button>
+</div>
 
-<!-- RESULTADOS NUMÉRICOS DETALHADOS -->
-<div class="results" id="results" style="display:none;">
-  <h2>Seu Impacto Detalhado</h2>
-  
-  <!-- ÁGUA -->
-  <div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-bottom:15px;">
-    <h3>💧 Água</h3>
-    <p><strong>Total:</strong> <span id="totalAgua"></span> litros/mês</p>
-    <p><strong>Por pessoa:</strong> <span id="aguaPorPessoa"></span> litros/dia</p>
-    <p id="msgAgua" style="font-weight:600;"></p>
-  </div>
+<div id="resultados"></div>
 
-  <!-- ENERGIA -->
-  <div style="background:#fffae6; padding:10px; border-radius:8px; margin-bottom:15px;">
-    <h3>⚡ Energia</h3>
-    <p><strong>Consumo:</strong> <span id="totalEnergia"></span> kWh/mês</p>
-    <p><strong>Equivalente:</strong> <span id="equivEnergia"></span> horas de TV</p>
-    <p id="msgEnergia" style="font-weight:600;"></p>
-  </div>
-
-  <!-- TRANSPORTE -->
-  <div style="background:#f0ffe6; padding:10px; border-radius:8px;">
-    <h3>🚗 Transporte</h3>
-    <p><strong>Quilometragem:</strong> <span id="totalKm"></span> km/mês</p>
-    <p><strong>CO₂ emitido:</strong> <span id="totalCO2"></span> kg</p>
-    <p id="msgTransporte" style="font-weight:600;"></p>
-  </div>
-
-  <p style="font-size:0.8rem; color:#666; margin-top:20px;">
-    *Baseado em médias de consumo da região
-  </p>
+<div class="card aviso">
+    <h3>Lembre-se</h3>
+    <p>⚠️ Nenhum dado é 100% preciso! São apenas estimativas. 😄</p>
 </div>
 
 <footer>
-  <p>Desenvolvido por <strong>Matheus Barbalho</strong></p>
-  <p>Projeto de Extensão Curricular - <strong>UNISANTA</strong></p>
+    <p>Desenvolvido por Matheus Barbalho</p>
+    <p>Projeto de Extensão Curricular - UNISANTA | Dados: SAAE/Enel 2024</p>
 </footer>
 
 <script>
-  document.getElementById('ecoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // CAPTURA DOS VALORES (todos numéricos)
-    const pessoas = parseInt(document.getElementById('pessoas').value);
-    const aguaM3 = parseFloat(document.getElementById('agua').value);
-    const energia = parseInt(document.getElementById('energia').value);
-    const km = parseInt(document.getElementById('km').value);
+    function toggleInput(type) {
+        const personalizadoInput = document.getElementById(type + 'Personalizado');
+        const select = document.getElementById(type);
+        personalizadoInput.classList.toggle('hidden', select.value !== 'personalizado');
+    }
 
-    // CÁLCULOS DA ÁGUA
-    const aguaLitros = aguaM3 * 1000;
-    const litrosPorPessoaDia = (aguiaLitros / pessoas / 30).toFixed(0);
+    function calcularImpacto() {
+        const pessoas = parseInt(document.getElementById('pessoas').value);
+        const aguaSelecionada = document.getElementById('agua').value;
+        const energiaSelecionada = document.getElementById('energia').value;
+        const transporteSelecionado = parseInt(document.getElementById('transporte').value);
 
-    // CÁLCULOS DE ENERGIA
-    const horasTV = (energia / 0.2).toFixed(0); // TV de 200W
+        // Cálculos
+        const mediaAgua = aguaSelecionada === 'personalizado' ? parseInt(document.getElementById('aguaPersonalizado').value) : (aguaSelecionada === 'alto' ? 150 : (aguaSelecionada === 'baixo' ? 80 : 110));
+        const mediaEnergia = energiaSelecionada === 'personalizado' ? parseInt(document.getElementById('energiaPersonalizado').value) : (energiaSelecionada === 'alto' ? 250 : (energiaSelecionada === 'baixo' ? 120 : 180));
+        const kmPorPessoa = transporteSelecionado;
 
-    // CÁLCULOS DE TRANSPORTE
-    const co2 = (km * 0.2).toFixed(1); // 0.2kg CO2 por km
+        const litrosTotal = mediaAgua * pessoas * 30;
+        const kWhTotal = mediaEnergia;
+        const co2 = kmPorPessoa * 0.2;
 
-    // EXIBIÇÃO DOS RESULTADOS
-    document.getElementById('totalAgua').textContent = aguaLitros.toLocaleString('pt-BR');
-    document.getElementById('aguaPorPessoa').textContent = litrosPorPessoaDia;
-    document.getElementById('totalEnergia').textContent = energia;
-    document.getElementById('equivEnergia').textContent = horasTV;
-    document.getElementById('totalKm').textContent = km;
-    document.getElementById('totalCO2').textContent = co2;
+        // Mensagens
+        let aguaMensagem = '';
+        if (litrosTotal < 3000) {
+            aguaMensagem = '✅ Ótimo! Você está abaixo da média de consumo.';
+        } else if (litrosTotal < 5000) {
+            aguaMensagem = '⚠️ Você está na média de consumo. Considere reduzir um pouco.';
+        } else {
+            aguaMensagem = '🚨 Atenção! Seu consumo está acima da média. Tente economizar.';
+        }
 
-    // MENSAGENS PERSONALIZADAS
-    document.getElementById('msgAgua').innerHTML = getMsgAgua(litrosPorPessoaDia);
-    document.getElementById('msgEnergia').innerHTML = getMsgEnergia(energia);
-    document.getElementById('msgTransporte').innerHTML = getMsgTransporte(km);
+        let energiaMensagem = '';
+        if (kWhTotal < 150) {
+            energiaMensagem = '✅ Excelente! Você está economizando energia.';
+        } else if (kWhTotal < 250) {
+            energiaMensagem = '⚠️ Você está na média de consumo de energia.';
+        } else {
+            energiaMensagem = '🚨 Cuidado! Seu consumo de energia está alto. Considere alternativas.';
+        }
 
-    // MOSTRA RESULTADOS
-    document.getElementById('results').style.display = 'block';
-  });
+        let transporteMensagem = '';
+        if (co2 < 20) {
+            transporteMensagem = '✅ Ótimo! Você está contribuindo para um ar mais limpo.';
+        } else if (co2 < 50) {
+            transporteMensagem = '⚠️ Você está na média de emissão de CO₂.';
+        } else {
+            transporteMensagem = '🚨 Atenção! Suas emissões de CO₂ estão altas. Tente usar transporte alternativo.';
+        }
 
-  function getMsgAgua(litrosDia) {
-    if (litrosDia > 150) return "🚨 Consumo ALTO! Reduza banhos e vazamentos";
-    else if (litrosDia > 100) return "⚠️ Na média. Dica: Torneira fechada ao escovar dentes = 12L/min";
-    else return "✅ Consumo BOM! Continue economizando";
-  }
-
-  function getMsgEnergia(kWh) {
-    if (kWh > 200) return "🚨 Alto consumo! Desligue aparelhos em standby";
-    else if (kWh > 120) return "⚠️ Moderado. Use luz natural quando possível";
-    else return "✅ Eficiente! Parabéns";
-  }
-
-  function getMsgTransporte(km) {
-    if (km > 300) return "🚨 Poluente! Tente transporte público 2x/semana";
-    else if (km > 100) return "⚠️ Razoável. Caronas reduzem emissões";
-    else return "✅ Sustentável! Ótima escolha";
-  }
+        // Resultados
+        const resultadosDiv = document.getElementById('resultados');
+        resultadosDiv.innerHTML = `
+            <div class="card">
+                <h3>💧 Água</h3>
+                <p>${litrosTotal} litros/mês (${(litrosTotal / pessoas / 30).toFixed(2)}L/dia por pessoa)</p>
+                <p class="dica">${aguaMensagem}</p>
+            </div>
+            <div class="card">
+                <h3>⚡ Energia</h3>
+                <p>${kWhTotal} kWh/mês (equivalente a ${(kWhTotal / 0.2).toFixed(0)}h de TV)</p>
+                <p class="dica">${energiaMensagem}</p>
+            </div>
+            <div class="card">
+                <h3>🚗 Transporte</h3>
+                <p>${co2.toFixed(2)}kg de CO₂ (equivalente a ${Math.floor(co2 / 20)} árvores)</p>
+                <p class="dica">${transporteMensagem}</p>
+            </div>
+        `;
+    }
 </script>
+
 </body>
 </html>
+
